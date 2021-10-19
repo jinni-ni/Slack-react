@@ -7,7 +7,9 @@ import { Button, Error, Form, Header, Input, Label, LinkContainer } from '@pages
 import useSWR from 'swr';
 
 const LogIn = () => {
-  const { data, error } = useSWR('http://localhost:3095/api/users', fetcher);
+  const { data, error, revalidate } = useSWR('http://localhost:3095/api/users', fetcher, {
+    dedupingInterval: 100000,
+  });
   const [logInError, setLogInError] = useState(false);
   const [email, onChangeEmail] = useInput('');
   const [password, onChangePassword] = useInput('');
@@ -24,6 +26,7 @@ const LogIn = () => {
           },
         )
         .then(() => {
+          revalidate();
           // mutate();
         })
         .catch((error) => {
